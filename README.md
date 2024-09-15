@@ -20,25 +20,36 @@ Siga os passos abaixo para rodar a aplicação localmente:
 
 ### 1. Clonar o repositório
 
-
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
-cd nome-do-repositorio
+```
+git clone https://github.com/carol-cloud/cadastro-usuarios.git
+cd usuarios-cadastro-react
+```
 
 ### 2. Instalar dependências
 
-Utilizando npm: npm install
-Utilizando yarn: yarn install
+Utilizando npm
+
+```npm install```
+
+Utilizando yarn
+
+```yarn install```
 
 ### 3. Configurar variáveis de ambiente
 Crie um arquivo .env na raiz do projeto e adicione a seguinte variável de ambiente:
-REACT_APP_BACKEND_URL=http://localhost:3001
+
+```REACT_APP_BACKEND_URL=http://localhost:3001```
+
 Essa variável define a URL do backend para onde as requisições de login e registro serão enviadas.
 
 ### 4. Rodar a aplicação
 Após a configuração do ambiente, inicie o servidor de desenvolvimento:
-npm start
+
+```npm start```
+
 Ou, se estiver usando yarn:
-yarn start
+
+```yarn start```
 
 A aplicação estará disponível em http://localhost:3000.
 
