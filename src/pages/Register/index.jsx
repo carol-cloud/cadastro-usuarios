@@ -43,7 +43,7 @@ export const Register = () => {
         <span className="login-form-title"> Criar Conta </span>
 
         <span className="login-form-title">
-          <img src={jpIMG} alt="Jovem Programador" />
+          <img src={jpIMG} alt="logo" />
         </span>
 
         <div className="wrap-input">
