@@ -24,10 +24,10 @@ export const Register = () => {
     };
 
     try {
-      const response = await api.post("/user/cadastro", user); // Usando o service `api`
+      const response = await api.post("/user/cadastro", user); 
 
       if (response.status === 201) {
-        // Redireciona para a página de login se o cadastro for bem-sucedido
+        
         navigate("/login");
       } else {
         setErrorMessage(response.data.error || "Erro no cadastro.");
