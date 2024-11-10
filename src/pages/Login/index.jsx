@@ -5,7 +5,7 @@ import jpIMG from "../../assets/jp.svg";
 import { LayoutComponents } from "../../components/LayoutComponents/index";
 import api from "../../services/api";
 
-export const Login = () => {
+export const Login = ({ setUserData }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,16 +20,17 @@ export const Login = () => {
     try {
       const response = await api.post("/user/login", { email, senha: password });
   
-      const data = response.data;
+      const { token } = response.data;
       if (response.status === 200) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", token);
+        setUserData({ token, user: email });
   
         navigate("/dashboard");
       } else {
-        setError(data.error || "Erro ao fazer login.");
+        console.error("Erro ao fazer login:", error);
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Erro no servidor. Tente novamente mais tarde.");
+      console.error("Erro ao fazer login:", error);
     }
   }
 
