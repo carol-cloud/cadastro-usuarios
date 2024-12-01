@@ -34,6 +34,7 @@ const Dashboard = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({ nome: '', email: '', senha: '' });
+  const [userRole, setUserRole] = useState('');
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -42,12 +43,18 @@ const Dashboard = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token');
+        console.log(token)
         const response = await api.get('/user/usuarios', {
           headers: {
             'x-auth-token': token,
           },
         });
         setUsers(response.data);
+
+        const userResponse = await api.get('/user/usuario', {
+          headers: { 'x-auth-token': token },
+        });
+        setUserRole(userResponse.data.role);
       } catch (error) {
         console.error('Erro ao buscar usuários:', error);
       }
@@ -72,11 +79,8 @@ const Dashboard = () => {
     if (window.confirm('Tem certeza que deseja deletar este usuário?')) {
       try {
         const token = localStorage.getItem('token');
-        await fetch(`/api/usuarios/${userId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        await api.delete(`/user/usuario/${userId}`, {
+          headers: { 'x-auth-token': token },
         });
         setUsers(users.filter((user) => user.id !== userId));
       } catch (error) {
@@ -89,13 +93,9 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem('token');
       const updatedUser = { ...selectedUser, ...formData };
-      await fetch(`/api/usuarios/${selectedUser.id}`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUser),
+      console.log(updatedUser);
+      await api.put(`/user/usuario/${updatedUser.id}`, updatedUser, {
+        headers: { 'x-auth-token': token },
       });
       setUsers(
         users.map((user) =>
@@ -110,9 +110,9 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ p: 3, minHeight: '100vh' }}>
-      <Paper 
-        elevation={3} 
-        sx={{ 
+      <Paper
+        elevation={3}
+        sx={{
           p: 2,
           borderRadius: 2,
         }}
@@ -141,8 +141,8 @@ const Dashboard = () => {
               placeholder="Pesquisar usuários..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              sx={{ 
-                flex: 1, 
+              sx={{
+                flex: 1,
                 maxWidth: 500,
               }}
             />
@@ -160,27 +160,32 @@ const Dashboard = () => {
             </TableHead>
             <TableBody>
               {filteredUsers?.map((user) => (
-                <TableRow 
+                <TableRow
                   key={user.email}
                   sx={{ '&:hover': { bgcolor: 'action.hover' } }}
                 >
                   <TableCell>{user.nome}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell align="right">
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEdit(user)}
-                      size="small"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
+                    {userRole !== 'visualizador' && (
+                      <>
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleEdit(user)}
+                          size="small"
+                        >
+                          <EditIcon />
+                        </IconButton>
+
+                      </>
+                    )}
+                    {userRole === 'administrador' && <IconButton
                       color="error"
                       onClick={() => handleDelete(user.id)}
                       size="small"
                     >
                       <DeleteIcon />
-                    </IconButton>
+                    </IconButton>}
                   </TableCell>
                 </TableRow>
               ))}
